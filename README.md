@@ -1,6 +1,23 @@
+# OVERVIEW #
+The Data & AI Platform repository offers a comprehensive suite of tools and resources for deploying and configuring essential Azure services. It orchestrates the creation of a modern enterprise data and AI estate, primed to power your AI applications and deliver rapid value. Hundreds of customers have utilized this platform to build a unified data and AI infrastructure, accelerating their AI transformation.
 
+It includes:
+* Bicep templates and parameter files for each of the primary Data & AI Platform components. AVM bicep modules now being integrated! 
+* GitHub Actions enabling rapid deployment of code artifacts.
+* Ability to deploy greenfield environment in less than an hour
+* Ability to deploy as a secure VNet with private endpoints and managed identities aligned to the Microsoft Well-Architected Framework (WAF).
+* Full deployment instructions with references to Microsoft Learn documentation.
+* Metadata driven data ingestion patterns for major source data systems
+* A Wiki containing architecture patterns, documentation, and usage scenarios.
 
-# 1. Deploy the Azure Infrastructure and Data Pipeline Related Artifacts
+The repository currently supports three data platforms:
+* Azure Synapse Analytics
+* Azure Databricks & Unity Catalog
+* Microsoft Fabric Capacity deployment (additional Fabric automation and configuration (CI/CD) forthcoming)
+
+## GETTING STARTED WITH THE DEPLOYMENT ##
+
+### 1. Deploy the Azure Infrastructure and Data Pipeline Related Artifacts
 1. [Create a Service Principal](https://learn.microsoft.com/en-us/azure/active-directory/develop/howto-create-service-principal-portal)
 1. Assign Service Principal with Subscription Rights. There's 2 Options
     - Assign the Service Principal RBAC Owner rights at the Subscription(s)
@@ -63,16 +80,16 @@
 1. Trigger the **data-strategy-orchestrator** GitHub Action. If you're unfamiliar with triggering a GitHub Action, follow these [instructions](https://docs.github.com/en/actions/managing-workflow-runs/manually-running-a-workflow).
     - Please do not use the "rerun" job functionality. Always execute the job using method in above instructions
 
-# 2. Complete the Post Deployment Tasks
+## 2. Complete the Post Deployment Tasks
 
-## Azure SQL
+### Azure SQL
 1. Execute the below stored procedure in the deployed Azure SQL Database(s)
     - Login with AAD. SQL Auth is disabled.
 ```sql
 EXEC [dbo].[AddManagedIdentitiesAsUsers]
 ```
 
-## Synapse
+### Synapse
 1. Execute the below stored procedure in the Synapse Serverless Database **StoredProcDB** 
     - Login with AAD. SQL Auth is disabled post deployment.
 ```sql
@@ -80,7 +97,7 @@ EXEC [dbo].[AddManagedIdentitiesAsUsers]
 ```
 2. If you're deploying the logic app, run the following precreated SQL script in the Synapse portal: **RunForLogicApp**
 
-## Purview
+### Purview
 1. Add the ADF and Synapse managed identities as [Data Curator's in the Root Collection of Purview](https://learn.microsoft.com/en-us/azure/synapse-analytics/catalog-and-governance/quickstart-connect-azure-purview#set-up-authentication)
     - This is required for lineage
 2. When lake DBs are created, you will need to execute the below commands for Purview to scan
@@ -89,7 +106,7 @@ CREATE LOGIN [PurviewAccountName] FROM EXTERNAL PROVIDER;
 CREATE USER [PurviewAccountName] FOR LOGIN [PurviewAccountName];
 ALTER ROLE db_datareader ADD MEMBER [PurviewAccountName]; 
 ```
-#### If you're deploying all resources with no public access behind a virtual network and your service principal didn't have Owner RBAC rights on the **Subscription**
+### If you're deploying all resources with no public access behind a virtual network and your service principal didn't have Owner RBAC rights on the **Subscription**
 
 3. Get Owner of Subscription to Provide AAD Group with Contributor Access to Purview Managed Resource Group
 
@@ -102,14 +119,14 @@ ALTER ROLE db_datareader ADD MEMBER [PurviewAccountName];
 6. Set up a [Self-Hosted Integration Runtime](https://learn.microsoft.com/en-us/azure/purview/catalog-private-link-end-to-end#deploy-self-hosted-integration-runtime-ir-and-scan-your-data-sources) to scan data sources unsupported by the Managed VNET Integration Runtime
 
 
-# 3. Start Ingesting Data
+## 3. Start Ingesting Data
 
-## Process Overview
+### Process Overview
 1. Overview of Pre-Built Ingestion Patterns ![image](https://github.com/microsoft/Data-Strategy-Platform-and-Analytics/assets/99213879/9f08709a-1363-4316-bb38-24065042e03d)
 2. Overview of Pre-Build Data Pipelines ![image](https://github.com/microsoft/Data-Strategy-Platform-and-Analytics/assets/99213879/f1be5582-e9c2-41db-b9aa-937c928c302b)
 3. Moving Data to Curated ![image](https://github.com/microsoft/Data-Strategy-Platform-and-Analytics/assets/99213879/4c480e16-1e27-4874-8ea6-b33dbe18bc4a)
 
-## Create Control Table Records for Metadata Driven Ingestion
+### Create Control Table Records for Metadata Driven Ingestion
 1. Please create control table records in the dbo.MetadataControl table in the Azure SQL DB. Please follow the instructions [here](azure_sql_artifacts/README.md)
     - Every time you need to ingest a new source entity (e.g. sql table, csv file, Excel tab), please create one control table record when moving data from source to landing, one for landing to raw, and one for raw to staging.
 
@@ -127,7 +144,7 @@ This project has adopted the [Microsoft Open Source Code of Conduct](https://ope
 For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or
 contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
 
-## Trademarks
+# Trademarks
 
 This project may contain trademarks or logos for projects, products, or services. Authorized use of Microsoft 
 trademarks or logos is subject to and must follow 
