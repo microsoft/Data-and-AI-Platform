@@ -4,7 +4,7 @@ It includes:
 * Bicep templates and parameter files for each of the primary Data & AI Platform components. AVM bicep modules now being integrated! 
 * GitHub Actions enabling rapid deployment of code artifacts.
 * Ability to deploy greenfield environment in less than an hour
-* Ability to deploy as a secure vnet with private endpoints and managed identities aligned to the Microsoft Well Architected Framework (WAF).
+* Ability to deploy as a secure VNet with private endpoints and managed identities aligned to the Microsoft Well-Architected Framework (WAF).
 * Full deployment instructions with references to Microsoft Learn documentation.
 * Metadata driven data ingestion patterns for major source data systems
 * A Wiki containing architecture patterns, documentation, and usage scenarios.
