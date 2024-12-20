@@ -12,7 +12,7 @@ It includes:
 The repository currently supports three data platforms:
 * Azure Synapse Analytics
 * Azure Databricks & Unity Catalog
-* Microsoft Fabric Capacity deployment (Additional Fabric automation and configuration (CI/CD) forthcoming)
+* Microsoft Fabric Capacity deployment (additional Fabric automation and configuration (CI/CD) forthcoming)
 
 ## GETTING STARTED WITH THE DEPLOYMENT ##
 
