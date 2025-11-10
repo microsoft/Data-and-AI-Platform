@@ -6,6 +6,9 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
+
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DataContract]') AND type in (N'U'))
+BEGIN
 CREATE TABLE [dbo].[DataContract](
 	[ID] [int] IDENTITY(1,1) NOT NULL,
 	[ContractID] [nvarchar](255) NOT NULL,
@@ -49,9 +52,13 @@ CREATE TABLE [dbo].[DataContract](
 	[DataAssetTechnicalInformation] [nvarchar](max) NULL,
 	[hsActive] [bit] NULL
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-GO
+
+IF NOT EXISTS (SELECT * FROM sys.key_constraints WHERE name = 'PK__DataCont__3214EC27' AND parent_object_id = OBJECT_ID('[dbo].[DataContract]'))
+BEGIN
 ALTER TABLE [dbo].[DataContract] ADD PRIMARY KEY CLUSTERED 
 (
 	[ID] ASC
 )WITH (STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+END
+END
 GO

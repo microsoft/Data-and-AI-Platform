@@ -8,6 +8,8 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[IngestedSourceDataAudit]') AND type in (N'U'))
+BEGIN
 CREATE TABLE [dbo].[IngestedSourceDataAudit](
 	[id] [int] IDENTITY(1,1) NOT NULL,
 	[source] [nvarchar](max) NULL,
@@ -33,10 +35,15 @@ WITH
 (
 SYSTEM_VERSIONING = ON (HISTORY_TABLE = [dbo].[IngestedSourceDataAuditHistory])
 )
-GO
 
+IF NOT EXISTS (SELECT * FROM sys.default_constraints WHERE name = 'DF_IngestedSourceDataAudit_ValidFrom' AND parent_object_id = OBJECT_ID('[dbo].[IngestedSourceDataAudit]'))
+BEGIN
 ALTER TABLE [dbo].[IngestedSourceDataAudit] ADD  CONSTRAINT [DF_IngestedSourceDataAudit_ValidFrom]  DEFAULT (sysutcdatetime()) FOR [ValidFrom]
-GO
+END
 
+IF NOT EXISTS (SELECT * FROM sys.default_constraints WHERE name = 'DF_IngestedSourceDataAudit_ValidTo' AND parent_object_id = OBJECT_ID('[dbo].[IngestedSourceDataAudit]'))
+BEGIN
 ALTER TABLE [dbo].[IngestedSourceDataAudit] ADD  CONSTRAINT [DF_IngestedSourceDataAudit_ValidTo]  DEFAULT (CONVERT([datetime2],'9999-12-31 23:59:59.9999999')) FOR [ValidTo]
+END
+END
 GO
