@@ -1,4 +1,17 @@
-# Example Control Table Records
+# Azure SQL Artifacts
+
+## Deployment
+
+All SQL table creation scripts in the `tables/` directory are idempotent and can be safely run multiple times. This allows for:
+- Re-running deployments without errors
+- Updating existing databases with new schema changes
+- Supporting continuous deployment pipelines
+
+The scripts use `IF NOT EXISTS` checks before creating tables and adding constraints to ensure they don't fail when objects already exist in the database.
+
+**Note:** Stored procedures use `CREATE OR ALTER` syntax which is inherently idempotent.
+
+## Example Control Table Records
 
 ## Important Notes
 
