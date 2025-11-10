@@ -7,6 +7,8 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ControlTable]') AND type in (N'U'))
+BEGIN
 CREATE TABLE [dbo].[ControlTable](
 	[Id] [int] IDENTITY(1,1) NOT NULL,
 	[SourceObjectSettings] [nvarchar](max) NULL,
@@ -35,15 +37,22 @@ WITH
 (
 SYSTEM_VERSIONING = ON (HISTORY_TABLE = [dbo].[ControlTableHistory])
 )
-GO
 
+IF NOT EXISTS (SELECT * FROM sys.default_constraints WHERE name = 'DF_ControlTable_PurviewScanEnabled' AND parent_object_id = OBJECT_ID('[dbo].[ControlTable]'))
+BEGIN
 ALTER TABLE [dbo].[ControlTable] ADD  CONSTRAINT [DF_ControlTable_PurviewScanEnabled]  DEFAULT ((1)) FOR [PurviewScanEnabled]
-GO
+END
 
+IF NOT EXISTS (SELECT * FROM sys.default_constraints WHERE name = 'DF_ControlTable_ValidFrom' AND parent_object_id = OBJECT_ID('[dbo].[ControlTable]'))
+BEGIN
 ALTER TABLE [dbo].[ControlTable] ADD  CONSTRAINT [DF_ControlTable_ValidFrom]  DEFAULT (sysutcdatetime()) FOR [ValidFrom]
-GO
+END
 
+IF NOT EXISTS (SELECT * FROM sys.default_constraints WHERE name = 'DF_ControlTable_ValidTo' AND parent_object_id = OBJECT_ID('[dbo].[ControlTable]'))
+BEGIN
 ALTER TABLE [dbo].[ControlTable] ADD  CONSTRAINT [DF_ControlTable_ValidTo]  DEFAULT (CONVERT([datetime2],'9999-12-31 23:59:59.9999999')) FOR [ValidTo]
+END
+END
 GO
 
 DECLARE @controlTableRecords INTEGER 
